@@ -3,7 +3,7 @@ import { CustomButtonContainer } from "./custom-button.styles";
 // import "./custom-button.styles.scss";
 
 const CustomButton = ({ children, ...props }) => (
-  <CustomButtonContainer {...props}>{children}</CustomButtonContainer>
+  <CustomButtonContainer className="custom-button" {...props}>{children}</CustomButtonContainer>
 );
 
 export default CustomButton;
