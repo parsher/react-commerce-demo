@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage'; // localstorage
 
 import cartReducer from './cart/cart.reducer';
 import userReducer from './user/user.reducer';
+import directoryReducer from './directory/directory.reducer';
 
 // whitelist: which do you want to persist
 const persistConfig = {
@@ -14,7 +15,8 @@ const persistConfig = {
 
 const rootReducer =  combineReducers({
   user: userReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  directory: directoryReducer
 });
 
 // persist version reducer
