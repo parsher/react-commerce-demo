@@ -37,8 +37,7 @@ class App extends Component {
           // console.log(this.state);
         });
       }
-
-      setCurrentUser({ userAuth });
+      setCurrentUser(userAuth);
     });
   }
 
