@@ -1,55 +1,24 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
-import { updateCollections } from "../../redux/shop/shop.action";
+import { createStructuredSelector } from "reselect";
+import { fetchCollectionsStartAsync } from "../../redux/shop/shop.action";
+import { selectIsCollectionFetching } from "../../redux/shop/shop.selector";
 import CollectionsOverview from "../../components/collections-overview/collections-overview.component";
 import WithSpinner from "../../components/with-spinner/with-spinner.component";
 import CollectionPage from "../collection/collection.component";
-
-import {
-  firestore,
-  convertCollectionsSnapshotToMap
-} from "../../firebase/firebase.utils";
 
 const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
 const CollectionPageWithPage = WithSpinner(CollectionPage);
 
 class ShopPage extends React.Component {
-  state = {
-    loading: true
-  };
-
-  // unsubscribeFromSnapshot = null;
-
   componentDidMount() {
-    const { updateCollections } = this.props;
-    const collectionRef = firestore.collection("collections");
-
-    // rest api call
-    /* fetch(`https://firestore.googleapis.com/v1/projects/crwndbo/databases/(default)/documents/collections`)
-    .then(response => response.json())
-    .then(collections => {
-      console.log(collections); // return values has a long nested values > do not use this.
-    }); */
-
-    // firestore promise style > but you call this everytime when the data is refreshed
-    collectionRef.get().then(snapShot => {
-      const collectionMap = convertCollectionsSnapshotToMap(snapShot);
-      updateCollections(collectionMap);
-      this.setState({ loading: false });
-    });
- 
-    // firebase oberser style
-    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(async snapshot => {
-    //   const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-    //   updateCollections(collectionMap);
-    //   this.setState({ loading: false });
-    // });
+    const { fetchCollectionsStartAsync } = this.props;
+    fetchCollectionsStartAsync();
   }
 
   render() {
-    const { match } = this.props;
-    const { loading } = this.state;
+    const { match, isCollectionFetching } = this.props;
     // math.path == current path
     // /:categoryId => parameter
     return (
@@ -58,23 +27,33 @@ class ShopPage extends React.Component {
           exact
           path={`${match.path}`}
           render={props => (
-            <CollectionsOverviewWithSpinner isLoading={loading} {...props} />
+            <CollectionsOverviewWithSpinner
+              isLoading={isCollectionFetching}
+              {...props}
+            />
           )}
         />
         <Route
           path={`${match.path}/:collectionId`}
           render={props => (
-            <CollectionPageWithPage isLoading={loading} {...props} />
+            <CollectionPageWithPage
+              isLoading={isCollectionFetching}
+              {...props}
+            />
           )}
-        /> 
+        />
       </div>
     );
   }
 }
-// route render => props : match....
-const mapDispatchToProps = dispatch => ({
-  updateCollections: collectionsMap =>
-    dispatch(updateCollections(collectionsMap))
+
+const mapStateToProps = createStructuredSelector({
+  isCollectionFetching: selectIsCollectionFetching
 });
 
-export default connect(null, mapDispatchToProps)(ShopPage);
+// route render => props : match....
+const mapDispatchToProps = dispatch => ({
+  fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);
