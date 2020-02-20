@@ -19,17 +19,32 @@ class ShopPage extends React.Component {
     loading: true
   };
 
-  unsubscribeFromSnapshot = null;
+  // unsubscribeFromSnapshot = null;
 
   componentDidMount() {
     const { updateCollections } = this.props;
     const collectionRef = firestore.collection("collections");
 
-    this.unsubscribeFromSnapshot = collectionRef.onSnapshot(async snapshot => {
-      const collectionMap = convertCollectionsSnapshotToMap(snapshot);
+    // rest api call
+    /* fetch(`https://firestore.googleapis.com/v1/projects/crwndbo/databases/(default)/documents/collections`)
+    .then(response => response.json())
+    .then(collections => {
+      console.log(collections); // return values has a long nested values > do not use this.
+    }); */
+
+    // firestore promise style > but you call this everytime when the data is refreshed
+    collectionRef.get().then(snapShot => {
+      const collectionMap = convertCollectionsSnapshotToMap(snapShot);
       updateCollections(collectionMap);
       this.setState({ loading: false });
     });
+ 
+    // firebase oberser style
+    // this.unsubscribeFromSnapshot = collectionRef.onSnapshot(async snapshot => {
+    //   const collectionMap = convertCollectionsSnapshotToMap(snapshot);
+    //   updateCollections(collectionMap);
+    //   this.setState({ loading: false });
+    // });
   }
 
   render() {
@@ -51,12 +66,12 @@ class ShopPage extends React.Component {
           render={props => (
             <CollectionPageWithPage isLoading={loading} {...props} />
           )}
-        />
+        /> 
       </div>
     );
   }
 }
-
+// route render => props : match....
 const mapDispatchToProps = dispatch => ({
   updateCollections: collectionsMap =>
     dispatch(updateCollections(collectionsMap))
