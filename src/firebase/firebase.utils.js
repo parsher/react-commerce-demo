@@ -73,9 +73,9 @@ export const firestore = firebase.firestore();
 //firebase.collection('users').doc('5t39BSdtPt78nXvixnCy').collection('cartItems').doc('HwtrkBK4Uv3fNg5KwuWO');
 //firebase.doc('/users/5t39BSdtPt78nXvixnCy/cartItems/HwtrkBK4Uv3fNg5KwuWO');
 //firebase.collection('/users/5t39BSdtPt78nXvixnCy/cartItems');
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;
