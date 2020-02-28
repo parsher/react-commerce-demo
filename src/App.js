@@ -10,10 +10,15 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { selectCurrentUser } from "./redux/user/user.selector";
+import { checkUserSession } from './redux/user/user.action';
 
 // Switch -> when match one above, do not match others.
 // exact -> should exact match
 class App extends Component {
+  componentDidMount() {
+    const { checkUserSession } = this.props;
+    checkUserSession();
+  }
 
   render() {
     return (<div>
@@ -33,4 +38,8 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 }); // collectionsArray: selectCollectionsForPreview
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+  checkUserSession: () => dispatch(checkUserSession())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
