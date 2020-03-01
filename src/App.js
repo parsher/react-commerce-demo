@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 
@@ -14,24 +14,22 @@ import { checkUserSession } from './redux/user/user.action';
 
 // Switch -> when match one above, do not match others.
 // exact -> should exact match
-class App extends Component {
-  componentDidMount() {
-    const { checkUserSession } = this.props;
+const App = ({ checkUserSession }) => {
+  useEffect(() => {
     checkUserSession();
-  }
+  }, [checkUserSession]);
 
-  render() {
-    return (<div>
-      <Header />
-      <Switch>
-        <Route exact path="/" component={HomePage}></Route>
-        <Route path="/shop" component={ShopPage}></Route>
-        <Route exact path="/checkout" component={CheckoutPage}></Route>
-        <Route path="/sign-in" render={() => this.props.currentUser ? (<Redirect to="/" />) : (<SignInAndSignUpPage />)}></Route>
-      </Switch>
-    </div>);
-  }
-}
+
+  return (<div>
+    <Header />
+    <Switch>
+      <Route exact path="/" component={HomePage}></Route>
+      <Route path="/shop" component={ShopPage}></Route>
+      <Route exact path="/checkout" component={CheckoutPage}></Route>
+      <Route path="/sign-in" render={() => this.props.currentUser ? (<Redirect to="/" />) : (<SignInAndSignUpPage />)}></Route>
+    </Switch>
+  </div>);
+};
 
 // pass the currentUser from rootState.user(reducer)
 const mapStateToProps = createStructuredSelector({

@@ -12,7 +12,6 @@ const SignUp = ({signUpStart}) => {
     confirmPassword: ""
   });
 
-
   const { displayName, email, password, confirmPassword } = userCredentials;
 
   const handleChange = event => {
